@@ -92,7 +92,8 @@ def addPath(points, linewidth, color, alpha=0.5):
 
 
 def drawTree(decisionTreeClassifier, features=[], model=[], colormap='viridis',
-             figsize=15, dpi=300, ratio=1, classes=[], maxdepth=-1, ax=-1, custom_threshold: List[str]=None,):
+             figsize=15, dpi=300, ratio=1, classes=[], maxdepth=-1, ax=-1,
+             custom_threshold: List[str]=None, show_thresholds=False):
     '''
     custom_threshold
         labels for left/right thresholds
@@ -494,22 +495,23 @@ def drawTree(decisionTreeClassifier, features=[], model=[], colormap='viridis',
     #             threshold = map[threshold]
 
             fontSize = linewidth_from_data_units(min(nw/2.0,50), ax, reference='y')
-            if custom_threshold:
-                left = custom_threshold[0]
-            else:
-                left = '≤ ' + str(threshold)
-            threshold1 = plt.annotate(left, xy=(nx, ny-nh), color='black', size=fontSize, ha='right', va='center')
-            threshold1.set_path_effects([path_effects.Stroke(linewidth=lineSize, foreground='white', alpha=0.5),
-                                    path_effects.Normal()])
-            
-            if custom_threshold:
-                right = custom_threshold[1]
-            else:
-                right = '> ' + str(threshold)
+            if show_thresholds:
+                if custom_threshold:
+                    left = custom_threshold[0]
+                else:
+                    left = '≤ ' + str(threshold)
+                threshold1 = plt.annotate(left, xy=(nx, ny-nh), color='black', size=fontSize, ha='right', va='center')
+                threshold1.set_path_effects([path_effects.Stroke(linewidth=lineSize, foreground='white', alpha=0.5),
+                                        path_effects.Normal()])
+                
+                if custom_threshold:
+                    right = custom_threshold[1]
+                else:
+                    right = '> ' + str(threshold)
 
-            threshold2 = plt.annotate(right, xy=(nx+nw, ny-nh), color='black', size=fontSize, ha='left', va='center')
-            threshold2.set_path_effects([path_effects.Stroke(linewidth=lineSize, foreground='white', alpha=0.5),
-                                    path_effects.Normal()])
+                threshold2 = plt.annotate(right, xy=(nx+nw, ny-nh), color='black', size=fontSize, ha='left', va='center')
+                threshold2.set_path_effects([path_effects.Stroke(linewidth=lineSize, foreground='white', alpha=0.5),
+                                        path_effects.Normal()])
 
 
     y = nodeInfo[0][1]
