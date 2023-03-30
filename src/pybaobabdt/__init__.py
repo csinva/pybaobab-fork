@@ -1,5 +1,6 @@
 # Package imports
 
+from typing import List
 from sklearn import tree
 from sklearn.tree import _tree
 from sklearn.tree import DecisionTreeClassifier 
@@ -90,10 +91,16 @@ def addPath(points, linewidth, color, alpha=0.5):
     return patch
 
 
-def drawTree(decisionTreeClassifier, features=[], model=[], colormap='viridis', size=15, dpi=300, ratio=1, classes=[], maxdepth=-1, ax=-1, ):
+def drawTree(decisionTreeClassifier, features=[], model=[], colormap='viridis',
+             figsize=15, dpi=300, ratio=1, classes=[], maxdepth=-1, ax=-1, custom_threshold: List[str]=None,):
+    '''
+    custom_threshold
+        labels for left/right thresholds
+    '''
+
     clf = decisionTreeClassifier
-    sizeX = size
-    sizeY = size
+    # sizeX = size
+    # sizeY = size
     sizeDpi = dpi
     
     if model == []:
@@ -223,13 +230,14 @@ def drawTree(decisionTreeClassifier, features=[], model=[], colormap='viridis', 
     #g.draw('testTree.png')
 
 
-    size = (sizeX,sizeY)
+    # figsize = (sizeX,sizeY)
     
     if ax == -1:
 
-        plt.rcParams['figure.figsize'] = size   
-        fig = plt.figure(figsize=size, dpi=sizeDpi)
-        fig = plt.figure()
+        # plt.rcParams['figure.figsize'] = size   
+        # print('size', figsize)
+        fig = plt.figure(figsize=figsize, dpi=sizeDpi)
+        # fig = plt.figure()
         ax = fig.add_subplot(1,1,1)
     
         
@@ -486,11 +494,20 @@ def drawTree(decisionTreeClassifier, features=[], model=[], colormap='viridis', 
     #             threshold = map[threshold]
 
             fontSize = linewidth_from_data_units(min(nw/2.0,50), ax, reference='y')
-            threshold1 = plt.annotate('≤ ' + str(threshold), xy=(nx, ny-nh), color='black', size=fontSize, ha='right', va='center')
+            if custom_threshold:
+                left = custom_threshold[0]
+            else:
+                left = '≤ ' + str(threshold)
+            threshold1 = plt.annotate(left, xy=(nx, ny-nh), color='black', size=fontSize, ha='right', va='center')
             threshold1.set_path_effects([path_effects.Stroke(linewidth=lineSize, foreground='white', alpha=0.5),
                                     path_effects.Normal()])
+            
+            if custom_threshold:
+                right = custom_threshold[1]
+            else:
+                right = '> ' + str(threshold)
 
-            threshold2 = plt.annotate('> ' + str(threshold), xy=(nx+nw, ny-nh), color='black', size=fontSize, ha='left', va='center')
+            threshold2 = plt.annotate(right, xy=(nx+nw, ny-nh), color='black', size=fontSize, ha='left', va='center')
             threshold2.set_path_effects([path_effects.Stroke(linewidth=lineSize, foreground='white', alpha=0.5),
                                     path_effects.Normal()])
 
